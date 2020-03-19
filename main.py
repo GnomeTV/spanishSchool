@@ -1,11 +1,17 @@
 import telebot
-import os
 from bs4 import BeautifulSoup
 import requests
+import os
+import psycopg2
 
-token = os.environ.get('TOKEN', )
+conn = psycopg2.connect("dbname='db' user='app' host='db' password='langbots'")
+tbl = "CREATE TABLE IF NOT EXISTS mytable (i integer);"
+cur = conn.cursor()
+cur.execute(tbl)
+conn.commit()
+
+token = os.environ['BOT_TOKEN']
 bot = telebot.TeleBot(token)
-
 
 def conjugation(url):
     response = requests.get(url)
@@ -125,8 +131,5 @@ def key_answ(message):
     else:
         for i in range(0,4):
             bot.send_message(message.from_user.id, conjugation(url)[i])
-
-
-
 
 bot.polling(none_stop=True)
